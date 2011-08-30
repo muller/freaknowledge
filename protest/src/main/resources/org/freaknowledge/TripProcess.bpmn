@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<definitions id="Definition"
+             targetNamespace="http://www.jboss.org/drools"
+             typeLanguage="http://www.java.com/javaTypes"
+             expressionLanguage="http://www.mvel.org/2.0"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd"
+             xmlns:g="http://www.jboss.org/drools/flow/gpd"
+             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+             xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+             xmlns:tns="http://www.jboss.org/drools">
+
+  <itemDefinition id="_paymentMethodItem" structureRef="org.freaknowledge.trip.PaymentMethod" />
+  <itemDefinition id="_processItem" structureRef="org.freaknowledge.trip.TripProcess" />
+  <itemDefinition id="_expenseReportItem" structureRef="org.freaknowledge.trip.ExpenseReport" />
+
+  <process processType="Private" isExecutable="true" id="TripProcess" name="TripProcess" tns:packageName="org.freaknowledge" >
+
+    <!-- process variables -->
+    <property id="paymentMethod" itemSubjectRef="_paymentMethodItem"/>
+    <property id="process" itemSubjectRef="_processItem"/>
+    <property id="expenseReport" itemSubjectRef="_expenseReportItem"/>
+
+    <!-- nodes -->
+    <startEvent id="_1" name="Start" />
+    <endEvent id="_2" name="End" >
+        <terminateEventDefinition/>
+    </endEvent>
+    <userTask id="_7" name="Approve expenses" >
+      <ioSpecification>
+        <dataInput id="_7_GroupIdInput" name="GroupId" />
+        <inputSet>
+          <dataInputRefs>_7_GroupIdInput</dataInputRefs>
+        </inputSet>
+        <outputSet>
+        </outputSet>
+      </ioSpecification>
+      <dataInputAssociation>
+        <targetRef>_7_GroupIdInput</targetRef>
+        <assignment>
+          <from xsi:type="tFormalExpression">#{ApprovementGroupId}</from>
+          <to xsi:type="tFormalExpression">_7_GroupIdInput</to>
+        </assignment>
+      </dataInputAssociation>
+    </userTask>
+    <scriptTask id="_8" name="Pay expenses" scriptFormat="http://www.java.com/java" >
+      <script>System.out.println(paymentMethod);</script>
+    </scriptTask>
+    <userTask id="_10" name="Add receipts" >
+      <extensionElements>
+        <tns:onExit-script>
+          <script>System.out.println(expenseReport)</script>
+        </tns:onExit-script>
+      </extensionElements>
+      <ioSpecification>
+        <dataOutput id="_10_expenseReportOutput" name="expenseReport" />
+        <inputSet>
+        </inputSet>
+        <outputSet>
+          <dataOutputRefs>_10_expenseReportOutput</dataOutputRefs>
+        </outputSet>
+      </ioSpecification>
+      <dataOutputAssociation>
+        <sourceRef>_10_expenseReportOutput</sourceRef>
+        <targetRef>expenseReport</targetRef>
+      </dataOutputAssociation>
+    </userTask>
+    <exclusiveGateway id="_11" name="Gateway" gatewayDirection="Diverging" />
+    <exclusiveGateway id="_12" name="Gateway" gatewayDirection="Converging" />
+
+    <!-- connections -->
+    <sequenceFlow id="_8-_2" sourceRef="_8" targetRef="_2" />
+    <sequenceFlow id="_11-_7" sourceRef="_11" targetRef="_7" >
+      <conditionExpression xsi:type="tFormalExpression" ></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="_12-_8" sourceRef="_12" targetRef="_8" />
+    <sequenceFlow id="_1-_10" sourceRef="_1" targetRef="_10" />
+    <sequenceFlow id="_10-_11" sourceRef="_10" targetRef="_11" />
+    <sequenceFlow id="_11-_12" sourceRef="_11" targetRef="_12" name="Auto approve" >
+      <conditionExpression xsi:type="tFormalExpression" ></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="_7-_12" sourceRef="_7" targetRef="_12" />
+
+  </process>
+
+  <bpmndi:BPMNDiagram>
+    <bpmndi:BPMNPlane bpmnElement="TripProcess" >
+      <bpmndi:BPMNShape bpmnElement="_1" >
+        <dc:Bounds x="175" y="16" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_2" >
+        <dc:Bounds x="175" y="458" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_7" >
+        <dc:Bounds x="16" y="239" width="157" height="37" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_8" >
+        <dc:Bounds x="132" y="389" width="134" height="37" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_10" >
+        <dc:Bounds x="124" y="96" width="150" height="30" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_11" >
+        <dc:Bounds x="175" y="158" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_12" >
+        <dc:Bounds x="175" y="308" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="_8-_2" >
+        <di:waypoint x="199" y="407" />
+        <di:waypoint x="199" y="482" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_11-_7" >
+        <di:waypoint x="199" y="182" />
+        <di:waypoint x="94" y="257" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_12-_8" >
+        <di:waypoint x="199" y="332" />
+        <di:waypoint x="199" y="407" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_1-_10" >
+        <di:waypoint x="199" y="40" />
+        <di:waypoint x="199" y="111" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_10-_11" >
+        <di:waypoint x="199" y="111" />
+        <di:waypoint x="199" y="182" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_11-_12" >
+        <di:waypoint x="199" y="182" />
+        <di:waypoint x="199" y="332" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_7-_12" >
+        <di:waypoint x="94" y="257" />
+        <di:waypoint x="199" y="332" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+
+</definitions>

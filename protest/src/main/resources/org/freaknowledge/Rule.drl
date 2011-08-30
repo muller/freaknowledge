@@ -1,0 +1,71 @@
+package org.freaknowledge
+
+import org.freaknowledge.trip.*
+import org.drools.runtime.process.ProcessInstance
+
+rule "Trace fact handle"
+
+    when
+      f: Fact(factHandle == null)
+
+    then
+
+      modify(f) {
+
+        setFactHandle(kcontext.getKnowledgeRuntime().getFactHandle(f).toExternalForm())
+      }
+end
+
+rule "Set default processId"
+
+  when
+    p: Process(processId == null)
+
+  then
+
+    modify(p) {
+
+      setProcessId(p.getClass().getSimpleName())
+    }
+end
+
+rule "Create process instance"
+
+  when
+    p: Process(processId != null, parameters != null, processInstanceId == null)
+
+  then
+
+    ProcessInstance pi = kcontext.getKnowledgeRuntime().createProcessInstance(p.getProcessId(), p.getParameters());
+
+    modify(p) {
+
+      setProcessInstanceId(pi.getId())
+    }
+end
+
+rule "Important refund processes must have messages"
+
+  when
+    TripProcess(message == null, important == true)
+
+  then
+
+    insert(new Failure());
+end
+
+rule "Set up refund process"
+
+  when
+    p: TripProcess(parameters == null, message != null, important != null)
+
+  then
+    java.util.HashMap params = new java.util.HashMap();
+    params.put("paymentMethod", PaymentMethod.CHECK); // or BANK_TRANSFER
+    params.put("process", p);
+
+    modify(p) {
+
+      setParameters(params)
+    }
+end
