@@ -45,9 +45,6 @@
         </assignment>
       </dataInputAssociation>
     </userTask>
-    <scriptTask id="_8" name="Pay expenses" scriptFormat="http://www.java.com/java" >
-      <script>System.out.println(paymentMethod);</script>
-    </scriptTask>
     <userTask id="_10" name="Add receipts" >
       <extensionElements>
         <tns:onExit-script>
@@ -55,13 +52,22 @@
         </tns:onExit-script>
       </extensionElements>
       <ioSpecification>
+        <dataInput id="_10_TaskNameInput" name="TaskName" />
         <dataOutput id="_10_expenseReportOutput" name="expenseReport" />
         <inputSet>
+          <dataInputRefs>_10_TaskNameInput</dataInputRefs>
         </inputSet>
         <outputSet>
           <dataOutputRefs>_10_expenseReportOutput</dataOutputRefs>
         </outputSet>
       </ioSpecification>
+      <dataInputAssociation>
+        <targetRef>_10_TaskNameInput</targetRef>
+        <assignment>
+          <from xsi:type="tFormalExpression">AddReceipts</from>
+          <to xsi:type="tFormalExpression">_10_TaskNameInput</to>
+        </assignment>
+      </dataInputAssociation>
       <dataOutputAssociation>
         <sourceRef>_10_expenseReportOutput</sourceRef>
         <targetRef>expenseReport</targetRef>
@@ -71,11 +77,10 @@
     <exclusiveGateway id="_12" name="Gateway" gatewayDirection="Converging" />
 
     <!-- connections -->
-    <sequenceFlow id="_8-_2" sourceRef="_8" targetRef="_2" />
+    <sequenceFlow id="_12-_2" sourceRef="_12" targetRef="_2" />
     <sequenceFlow id="_11-_7" sourceRef="_11" targetRef="_7" >
       <conditionExpression xsi:type="tFormalExpression" ></conditionExpression>
     </sequenceFlow>
-    <sequenceFlow id="_12-_8" sourceRef="_12" targetRef="_8" />
     <sequenceFlow id="_1-_10" sourceRef="_1" targetRef="_10" />
     <sequenceFlow id="_10-_11" sourceRef="_10" targetRef="_11" />
     <sequenceFlow id="_11-_12" sourceRef="_11" targetRef="_12" name="Auto approve" >
@@ -91,13 +96,10 @@
         <dc:Bounds x="175" y="16" width="48" height="48" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="_2" >
-        <dc:Bounds x="175" y="458" width="48" height="48" />
+        <dc:Bounds x="175" y="389" width="48" height="48" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="_7" >
         <dc:Bounds x="16" y="239" width="157" height="37" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="_8" >
-        <dc:Bounds x="132" y="389" width="134" height="37" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="_10" >
         <dc:Bounds x="124" y="96" width="150" height="30" />
@@ -108,17 +110,13 @@
       <bpmndi:BPMNShape bpmnElement="_12" >
         <dc:Bounds x="175" y="308" width="48" height="48" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge bpmnElement="_8-_2" >
-        <di:waypoint x="199" y="407" />
-        <di:waypoint x="199" y="482" />
+      <bpmndi:BPMNEdge bpmnElement="_12-_2" >
+        <di:waypoint x="199" y="332" />
+        <di:waypoint x="199" y="413" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="_11-_7" >
         <di:waypoint x="199" y="182" />
         <di:waypoint x="94" y="257" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="_12-_8" >
-        <di:waypoint x="199" y="332" />
-        <di:waypoint x="199" y="407" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="_1-_10" >
         <di:waypoint x="199" y="40" />
