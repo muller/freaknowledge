@@ -2,7 +2,6 @@ package org.freaknowledge.protest
 
 import java.util.Map
 
-
 class ProcessTestBuilder extends BuilderSupport {
 
 	Test test
@@ -92,7 +91,6 @@ class ProcessTestBuilder extends BuilderSupport {
 	}
 
 	def createNode(Object name) {
-
 		new Node(current, name, [])
 	}
 

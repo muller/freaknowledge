@@ -134,9 +134,9 @@ class TestRuntime {
 
 		session = createKnowledgeSession()
 
-		test.when.closure.call(session)
+		test.when?.closure?.call(session)
 
-		test.when.actions.each {
+		test.when?.actions?.each {
 
 			def methodName = it.remove(0)
 			Method method = this.class.methods.find { it.name == methodName }
@@ -144,7 +144,7 @@ class TestRuntime {
 			method.invoke(this, it.toArray())
 		}
 
-		test.then session
+		test.then?.call(session)
 	}
 
 	def insert(String key, Object object) {

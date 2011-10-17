@@ -1,51 +1,64 @@
 import org.freaknowledge.trip.TripProcess
 
-def test = new org.freaknowledge.protest.ProcessTestBuilder()
-def test2 = new org.freaknowledge.protest.ProcessTestBuilder()
+class BuilderTest {
 
-test {
+	@org.junit.Test
+	void test() {
 
-	load 'Rule.drl', 'Flow.rf'
+		def test = new org.freaknowledge.protest.ProcessTestBuilder()
 
-	given {
+		test {
 
-		humanTask 'TaskName', { workItem, manager ->
+			load 'Rule.drl', 'Flow.rf'
 
-			manager.completeWorkItem workItem.id, [:]
+			given {
+
+				humanTask 'TaskName', { workItem, manager ->
+
+					manager.completeWorkItem workItem.id, [:]
+				}
+
+				subProcess 'SubProcessId', { context ->  }
+			}
+
+			when 'Something happens', {
+
+				startProcess 'ProcessId'
+				executeHumanTasks()
+			}
+
+			then { knowledgeSession -> assert knowledgeSession != null }
 		}
 
-		subProcess 'SubProcessId', { context ->  }
+		new org.freaknowledge.protest.TestRuntime(test: test.test).execute()
 	}
 
-	when 'Something happens', {
+	@org.junit.Test
+	void test2() {
 
-		startProcess 'ProcessId'
-		executeHumanTasks()
-	}
+		def test2 = new org.freaknowledge.protest.ProcessTestBuilder()
 
-	then { knowledgeSession -> assert knowledgeSession != null }
-}
+		test2 {
 
-test2 {
+			load 'org/freaknowledge/Rule.drl', 'org/freaknowledge/TripProcess.bpmn'
 
-	load 'org/freaknowledge/Rule.drl', 'org/freaknowledge/TripProcess.bpmn'
+			given {
 
-	given {
+				humanTask 'AddReceipts', { workItem, manager ->
 
-		humanTask 'AddReceipts', { workItem, manager ->
+					manager.completeWorkItem workItem.id, [:]
+				}
+			}
 
-			manager.completeWorkItem workItem.id, [:]
+			when 'Start TripProcess and execute AddReceipts', {
+
+				insert 'TripProcess', new TripProcess()
+				fireAllRules()
+			}
+
+			then { knowledgeSession -> assert knowledgeSession != null }
 		}
+
+		new org.freaknowledge.protest.TestRuntime(test: test2.test).execute()
 	}
-
-	when 'Start TripProcess and execute AddReceipts', {
-
-		insert 'TripProcess', new TripProcess()
-		fireAllRules()
-	}
-
-	then { knowledgeSession -> assert knowledgeSession != null }
 }
-
-new org.freaknowledge.protest.TestRuntime(test: test.test).execute()
-new org.freaknowledge.protest.TestRuntime(test: test2.test).execute()
